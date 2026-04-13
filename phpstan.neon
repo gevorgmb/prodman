@@ -1,0 +1,11 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app/
+        - database/
+        - routes/
+
+    # Level 10 is the highest level (strictest)
+    level: 5
