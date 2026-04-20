@@ -13,4 +13,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/send-email-verification', [ContactVerificationController::class, 'sendVerificationEmail']);
     Route::post('/verify-email-code', [ContactVerificationController::class, 'verifyEmailCode']);
     Route::get('/current-user', [UserController::class, 'index']);
+    Route::patch('/current-user', [UserController::class, 'update']);
 });
