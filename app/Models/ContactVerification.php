@@ -20,7 +20,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon $updated_at
  * @property Carbon|null $deleted_at
  */
-#[Fillable(['user_id', 'contact_type', 'status', 'wrong_count'])]
+#[Fillable(['user_id', 'contact_type', 'code', 'status', 'wrong_count'])]
 class ContactVerification extends Model
 {
     /**

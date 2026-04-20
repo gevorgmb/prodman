@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\ContactTypeEnum;
+use App\Enums\ContactVerificationStatusEnum;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -44,5 +47,51 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function emailVerification(): HasOne
+    {
+        return $this->hasOne(ContactVerification::class)
+            ->where([
+                'contact_type' => ContactTypeEnum::EMAIL->value,
+                'status' => ContactVerificationStatusEnum::PENDING->value,
+            ]);
+    }
+
+    public function phoneVerification(): HasOne
+    {
+        return $this->hasOne(ContactVerification::class)
+            ->where([
+                'contact_type' => ContactTypeEnum::PHONE->value,
+                'status' => ContactVerificationStatusEnum::PENDING->value,
+            ]);
+    }
+
+    public function emailVerificationLocked(): HasOne
+    {
+        return $this->hasOne(ContactVerification::class)
+            ->where([
+                'contact_type' => ContactTypeEnum::EMAIL->value,
+                'status' => ContactVerificationStatusEnum::LOCKED->value,
+            ])
+            ->where(
+                'updated_at',
+                '>',
+                now()->subHours((int) config('settings.verification_lock_hours'))
+            );
+    }
+
+    public function phoneVerificationLocked(): HasOne
+    {
+        return $this->hasOne(ContactVerification::class)
+            ->where([
+                'contact_type' => ContactTypeEnum::PHONE->value,
+                'status' => ContactVerificationStatusEnum::LOCKED->value,
+            ])
+            ->where(
+                'updated_at',
+                '>',
+                now()->subHours((int) config('settings.verification_lock_hours'))
+            );
     }
 }

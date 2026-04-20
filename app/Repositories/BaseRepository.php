@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace app\Repositories;
+namespace App\Repositories;
 
-use app\Repositories\Contracts\EloquentRepositoryInterface;
+use App\Repositories\Contracts\EloquentRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,8 +12,7 @@ class BaseRepository implements EloquentRepositoryInterface
 {
     public function __construct(
         protected Model $model,
-    )
-    {
+    ) {
     }
 
     public function find(int $id): ?Model
@@ -32,17 +31,18 @@ class BaseRepository implements EloquentRepositoryInterface
         foreach ($criteria as $field => $value) {
             $query->where($field, $value);
         }
-        if (!empty($orderBy)) {
+        if (! empty($orderBy)) {
             foreach ($orderBy as $field => $direction) {
                 $query->orderBy($field, $direction);
             }
         }
-        if (!empty($limit)) {
+        if (! empty($limit)) {
             $query->limit($limit);
         }
-        if (!empty($offset)) {
+        if (! empty($offset)) {
             $query->offset($offset);
         }
+
         return $query->get();
     }
 }

@@ -2,20 +2,16 @@
 
 declare(strict_types=1);
 
-namespace app\Services;
+namespace App\Services;
 
+use App\Mail\VerifyEmailMail;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 class EmailService
 {
-    public function __construct(
-
-    )
+    public function sendVerificationEmail(User $user, string $verificationCode): void
     {
-    }
-
-    public function sendVerificationEmail(User $user): void
-    {
-
+        Mail::to($user->email)->send(new VerifyEmailMail($verificationCode, $user->name));
     }
 }

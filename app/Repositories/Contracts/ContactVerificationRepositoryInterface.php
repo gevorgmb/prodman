@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace app\Repositories\Contracts;
+namespace App\Repositories\Contracts;
 
-use app\Enums\ContactTypeEnum;
+use App\Enums\ContactTypeEnum;
 
 interface ContactVerificationRepositoryInterface
 {
     public function verifyCode(int $userId, string $code, ContactTypeEnum $contactType): bool;
+
+    public function createVerification(int $userId, ContactTypeEnum $contactType): string;
 }

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->string('code', 50);
             $table->enum('contact_type', ['phone', 'email'])->default('email')->index();
-            $table->enum('status', ['pending', 'accepted', 'canceled', 'locked'])
+            $table->enum('status', ['pending', 'accepted', 'cancelled', 'locked'])
                 ->default('pending')
                 ->index();
             $table->integer('wrong_count')->unsigned()->default(0);

@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace app\Repositories;
+namespace App\Repositories;
 
-use app\Enums\ContactTypeEnum;
+use App\Enums\ContactTypeEnum;
 use App\Enums\ContactVerificationStatusEnum;
 use App\Models\ContactVerification;
-use DateTime;
+use App\Repositories\Contracts\ContactVerificationRepositoryInterface;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
-class ContactVerificationRepository extends BaseRepository implements Contracts\ContactVerificationRepositoryInterface
+class ContactVerificationRepository extends BaseRepository implements ContactVerificationRepositoryInterface
 {
     public function __construct(
         private readonly ContactVerification $contactVerificationModel,
@@ -22,60 +23,78 @@ class ContactVerificationRepository extends BaseRepository implements Contracts\
     public function verifyCode(int $userId, string $code, ContactTypeEnum $contactType): bool
     {
         $contactVerification = $this->contactVerificationModel->newQuery()
-            ->where(column: 'user_id', value: $userId)
-            ->where(column: 'status', value: ContactVerificationStatusEnum::PENDING->value)
-            ->where(column: 'contact_type', value: $contactType->value)
+            ->where('user_id', $userId)
+            ->where('contact_type', $contactType->value)
+            ->where('status', ContactVerificationStatusEnum::PENDING->value)
+            ->orderByDesc('id')
             ->first();
-        if ($contactVerification?->code !== $code ) {
-            $contactVerification->status = ContactVerificationStatusEnum::ACCEPTED->value;
+
+        if ($contactVerification === null) {
+            return false;
+        }
+
+        $expiresAt = $contactVerification->created_at->copy()->addHours(
+            (int) config('settings.verification_code_life_hours')
+        );
+        if ($expiresAt->isPast()) {
+            $contactVerification->status = ContactVerificationStatusEnum::CANCELLED->value;
             $contactVerification->save();
-            return true;
-        } else {
-            $extra = [
-                'updated_at' => new DateTime()->format('Y-m-d H:i:s'),
-            ];
-            if ($contactVerification->wrong_count >= config('settings.max_failed_verifications') - 1) {
+
+            return false;
+        }
+
+        if (! hash_equals($contactVerification->code, $code)) {
+            $extra = [];
+            if ($contactVerification->wrong_count >= (int) config('settings.max_failed_verifications') - 1) {
                 $extra['status'] = ContactVerificationStatusEnum::LOCKED->value;
             }
-            $contactVerification->increment(
-                'wrong_count',
-                1,
-                $extra
-            );
+            $contactVerification->increment('wrong_count', 1, $extra);
+
+            return false;
         }
-        return false;
+
+        $contactVerification->status = ContactVerificationStatusEnum::ACCEPTED->value;
+        $contactVerification->save();
+
+        return true;
     }
 
     public function createVerification(int $userId, ContactTypeEnum $contactType): string
     {
-        $contactVerification = $this->contactVerificationModel->newQuery()
-            ->where(column: 'user_id', value: $userId)
-            ->where(column: 'status', value: ContactVerificationStatusEnum::LOCKED->value)
-            ->where(column: 'contact_type', value: $contactType->value)
+        $lockedVerification = $this->contactVerificationModel->newQuery()
+            ->where('user_id', $userId)
+            ->where('contact_type', $contactType->value)
+            ->where('status', ContactVerificationStatusEnum::LOCKED->value)
+            ->orderByDesc('id')
             ->first();
+
         if (
-            $contactVerification
-            && now()->diffInHours($contactVerification->updated_at) > config('settings.verification_lock_hours')
+            $lockedVerification !== null
+            && now()->diffInHours($lockedVerification->updated_at) < (int) config('settings.verification_lock_hours')
         ) {
-            $this->model->newQuery()->where(column: 'user_id', value: $userId)
-                ->where(column: 'contact_type', value: $contactType->value)
-                ->update([
-                    'status' => ContactVerificationStatusEnum::CANCELLED->value,
-                    'updated_at' => new DateTime(),
-                ]);
+            throw ValidationException::withMessages([
+                'email' => ['Verification is temporarily locked after too many failed attempts. Please try again later.'],
+            ]);
         }
+
+        $this->model->newQuery()
+            ->where('user_id', $userId)
+            ->where('contact_type', $contactType->value)
+            ->update([
+                'status' => ContactVerificationStatusEnum::CANCELLED->value,
+                'updated_at' => now(),
+            ]);
+
         $code = Str::random(8);
-        /**
-         * @var ContactVerification $newVerification
-         */
-        $newVerification = $this->model->newQuery()->create(
-            [
-                'user_id' => $userId,
-                'contact_type' => $contactType->value,
-                'code' => $code,
-                'verification_status' => ContactVerificationStatusEnum::PENDING->value,
-            ]
-        );
+
+        /** @var ContactVerification $newVerification */
+        $newVerification = $this->model->newQuery()->create([
+            'user_id' => $userId,
+            'contact_type' => $contactType->value,
+            'code' => $code,
+            'status' => ContactVerificationStatusEnum::PENDING->value,
+        ]);
+
         return $newVerification->code;
     }
 }
