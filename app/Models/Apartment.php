@@ -15,11 +15,12 @@ use Illuminate\Support\Carbon;
  * @property int $owner_id
  * @property string $name
  * @property string $description
+ * @property boolean $is_default
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Carbon|null $deleted_at
  */
-#[Fillable(['owner_id', 'name', 'description'])]
+#[Fillable(['owner_id', 'name', 'description', 'is_default'])]
 class Apartment extends Model
 {
     use SoftDeletes;

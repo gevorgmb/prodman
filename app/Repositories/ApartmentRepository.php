@@ -37,11 +37,21 @@ class ApartmentRepository extends BaseRepository implements ApartmentRepositoryI
 
     public function createForOwner(int $ownerId, array $data): Apartment
     {
+        if (empty($data['is_default'])) {
+            $default = $this->findBy([
+                'owner_id' => $ownerId,
+                'is_default' => true,
+            ]);
+            if (empty($default)) {
+                $data['is_default'] = true;
+            }
+        }
         /** @var Apartment $apartment */
         $apartment = $this->apartmentModel->newQuery()->create([
             'owner_id' => $ownerId,
             'name' => $data['name'],
             'description' => $data['description'],
+            'is_default' => $data['is_default'] ?? false,
         ]);
 
         return $apartment;
@@ -49,6 +59,12 @@ class ApartmentRepository extends BaseRepository implements ApartmentRepositoryI
 
     public function updateForOwner(Apartment $apartment, array $data): Apartment
     {
+        if (! empty($data['is_default']) && ! $apartment->is_default) {
+            $this->apartmentModel->newQuery()
+                ->where('owner_id', $apartment->owner_id)
+                ->where('is_default', true)
+                ->update(['is_default' => false]);
+        }
         $apartment->fill($data);
         $apartment->save();
 
@@ -57,6 +73,16 @@ class ApartmentRepository extends BaseRepository implements ApartmentRepositoryI
 
     public function deleteForOwner(Apartment $apartment): void
     {
+        $isDefault = $apartment->is_default;
         $apartment->delete();
+        if ($isDefault) {
+            $firstApartment = $this->apartmentModel->newQuery()
+                ->where('owner_id', $apartment->owner_id)
+                ->first();
+            if ($firstApartment) {
+                $firstApartment->is_default = true;
+                $firstApartment->save();
+            }
+        }
     }
 }
