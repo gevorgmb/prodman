@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Repositories\ApartmentRepository;
 use App\Repositories\ContactVerificationRepository;
+use App\Repositories\Contracts\ApartmentRepositoryInterface;
 use App\Repositories\Contracts\ContactVerificationRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\UserRepository;
@@ -17,6 +19,10 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(
+            ApartmentRepositoryInterface::class,
+            ApartmentRepository::class,
+        );
         $this->app->bind(
             ContactVerificationRepositoryInterface::class,
             ContactVerificationRepository::class,
