@@ -80,6 +80,13 @@ class ContactVerificationRepository extends BaseRepository implements ContactVer
         $this->model->newQuery()
             ->where('user_id', $userId)
             ->where('contact_type', $contactType->value)
+            ->whereIn(
+                'status',
+                [
+                    ContactVerificationStatusEnum::PENDING->value,
+                    ContactVerificationStatusEnum::LOCKED->value,
+                ],
+            )
             ->update([
                 'status' => ContactVerificationStatusEnum::CANCELLED->value,
                 'updated_at' => now(),
