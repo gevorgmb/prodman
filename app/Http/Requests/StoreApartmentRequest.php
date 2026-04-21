@@ -22,6 +22,7 @@ class StoreApartmentRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
+            'is_default' => ['sometimes', 'boolean'],
         ];
     }
 }

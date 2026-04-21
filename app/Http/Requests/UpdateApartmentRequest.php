@@ -22,6 +22,7 @@ class UpdateApartmentRequest extends FormRequest
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'description' => ['sometimes', 'required', 'string'],
+            'is_default' => ['sometimes', 'boolean'],
         ];
     }
 }
