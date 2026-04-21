@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ApartmentController;
 use App\Http\Controllers\Api\ContactVerificationController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -14,4 +15,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/verify-email-code', [ContactVerificationController::class, 'verifyEmailCode']);
     Route::get('/current-user', [UserController::class, 'index']);
     Route::patch('/current-user', [UserController::class, 'update']);
+    Route::apiResource('/apartments', ApartmentController::class);
 });
