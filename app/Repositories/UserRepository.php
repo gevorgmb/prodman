@@ -25,6 +25,16 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $user;
     }
 
+    public function findByPhone(string $phone): ?User
+    {
+        /** @var User|null $user */
+        $user = $this->userModel->newQuery()
+            ->where('phone', $phone)
+            ->first();
+
+        return $user;
+    }
+
     public function getUserById(int $id): ?User
     {
         /** @var User|null $user */
