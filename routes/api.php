@@ -23,5 +23,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/apartment-users/{userId}', [ApartmentUserController::class, 'removeUserFromApartment']);
     Route::delete('/apartment-users/self/disconnect/{apartmentId}', [ApartmentUserController::class, 'disconnectFromApartment']);
     Route::get('/apartment-users', [ApartmentUserController::class, 'getUsers']);
-    Route::get('/related-apartments', [ApartmentUserController::class, 'getRelatedApartments']);
 });

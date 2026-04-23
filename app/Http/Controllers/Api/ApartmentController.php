@@ -8,8 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreApartmentRequest;
 use App\Http\Requests\UpdateApartmentRequest;
 use App\Http\Resources\ApartmentResource;
+use App\Http\Resources\RelatedApartmentResource;
 use App\Models\User;
-use App\Repositories\Contracts\ApartmentRepositoryInterface;
+use App\Services\Contracts\ApartmentServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -17,11 +18,11 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class ApartmentController extends Controller
 {
     public function __construct(
-        private readonly ApartmentRepositoryInterface $apartmentRepository,
+        private readonly ApartmentServiceInterface $apartmentService,
     ) {
     }
 
-    public function index(Request $request): AnonymousResourceCollection|JsonResponse
+    public function index(Request $request): JsonResponse
     {
         /** @var User|null $authUser */
         $authUser = $request->user();
@@ -29,9 +30,11 @@ class ApartmentController extends Controller
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        $apartments = $this->apartmentRepository->getAllByOwnerId($authUser->id);
+        $apartments = $this->apartmentService->getRelatedApartments($authUser->id);
 
-        return ApartmentResource::collection($apartments);
+        return response()->json([
+            'apartments' => RelatedApartmentResource::collection($apartments)->resolve(),
+        ]);
     }
 
     public function store(StoreApartmentRequest $request): JsonResponse
@@ -42,7 +45,7 @@ class ApartmentController extends Controller
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        $apartment = $this->apartmentRepository->createForOwner($authUser->id, $request->validated());
+        $apartment = $this->apartmentService->createForOwner($authUser->id, $request->validated());
 
         return (new ApartmentResource($apartment))
             ->response()
@@ -57,7 +60,7 @@ class ApartmentController extends Controller
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        $apartment = $this->apartmentRepository->findByIdAndOwnerId($id, $authUser->id);
+        $apartment = $this->apartmentService->findForOwner($id, $authUser->id);
         if ($apartment === null) {
             return response()->json(['message' => 'Apartment not found.'], 404);
         }
@@ -73,12 +76,12 @@ class ApartmentController extends Controller
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        $apartment = $this->apartmentRepository->findByIdAndOwnerId($id, $authUser->id);
+        $apartment = $this->apartmentService->findForOwner($id, $authUser->id);
         if ($apartment === null) {
             return response()->json(['message' => 'Apartment not found.'], 404);
         }
 
-        $apartment = $this->apartmentRepository->updateForOwner($apartment, $request->validated());
+        $apartment = $this->apartmentService->updateForOwner($apartment, $request->validated());
 
         return new ApartmentResource($apartment);
     }
@@ -91,12 +94,12 @@ class ApartmentController extends Controller
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        $apartment = $this->apartmentRepository->findByIdAndOwnerId($id, $authUser->id);
+        $apartment = $this->apartmentService->findForOwner($id, $authUser->id);
         if ($apartment === null) {
             return response()->json(['message' => 'Apartment not found.'], 404);
         }
 
-        $this->apartmentRepository->deleteForOwner($apartment);
+        $this->apartmentService->deleteForOwner($apartment);
 
         return response()->json([], 204);
     }
