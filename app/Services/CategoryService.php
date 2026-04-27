@@ -19,7 +19,9 @@ readonly class CategoryService implements CategoryServiceInterface
 
     public function getAllByApartmentId(int $apartmentId): Collection
     {
-        return $this->categoryRepository->getAllByApartmentId($apartmentId);
+        return $this->categoryRepository->getAllByApartmentId($apartmentId)
+            ->map(fn ($category) => CategoryDto::fromModel($category))
+            ->values();
     }
 
     public function findByIdAndApartmentId(int $id, int $apartmentId): ?CategoryDto
