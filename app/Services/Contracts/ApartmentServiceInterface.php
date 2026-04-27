@@ -7,7 +7,6 @@ namespace App\Services\Contracts;
 use App\Dto\Apartment\ManagedApartmentDto;
 use App\Dto\Apartment\RelatedApartmentDto;
 use App\Models\Apartment;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 interface ApartmentServiceInterface
@@ -22,7 +21,7 @@ interface ApartmentServiceInterface
 
     public function deleteForOwner(Apartment $apartment): void;
 
-    public function getManagedApartment(Request $request): ManagedApartmentDto;
+    public function getManagedApartment(?int $authUserId, int $apartmentId): ManagedApartmentDto;
 
     /**
      * @return Collection<int, RelatedApartmentDto>

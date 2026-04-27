@@ -8,11 +8,11 @@ use App\Enums\ContactTypeEnum;
 use App\Models\User;
 use App\Repositories\Contracts\ContactVerificationRepositoryInterface;
 
-class ContactVerificationService
+readonly class ContactVerificationService
 {
     public function __construct(
-        private readonly ContactVerificationRepositoryInterface $contactVerificationRepository,
-        private readonly EmailService $emailService,
+        private ContactVerificationRepositoryInterface $contactVerificationRepository,
+        private EmailService                           $emailService,
     )
     {
     }
