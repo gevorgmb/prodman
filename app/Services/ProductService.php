@@ -19,7 +19,9 @@ readonly class ProductService implements ProductServiceInterface
 
     public function getAllByApartmentId(int $apartmentId): Collection
     {
-        return $this->productRepository->getAllByApartmentId($apartmentId);
+        return $this->productRepository->getAllByApartmentId($apartmentId)
+            ->map(fn ($product) => ProductDto::fromModel($product))
+            ->values();
     }
 
     public function findByIdAndApartmentId(int $id, int $apartmentId): ?ProductDto
