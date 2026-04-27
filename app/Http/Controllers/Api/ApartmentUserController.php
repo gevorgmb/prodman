@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Dto\Apartment\ManagedApartmentDto;
 use App\Exceptions\Apartment\ApartmentAccessDeniedException;
 use App\Exceptions\Apartment\ApartmentHeaderMissingException;
 use App\Exceptions\Apartment\ApartmentMembershipNotFoundException;
@@ -14,25 +13,25 @@ use App\Exceptions\Apartment\OwnerCannotDisconnectException;
 use App\Exceptions\Apartment\UnauthenticatedException;
 use App\Exceptions\Apartment\UserAlreadyInApartmentException;
 use App\Exceptions\Apartment\UserNotFoundException;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\AbstractActiveApartmentController;
 use App\Http\Requests\AddApartmentUserRequest;
 use App\Http\Requests\ApartmentUserFindByEmailRequest;
 use App\Http\Requests\ApartmentUserFindByPhoneRequest;
 use App\Http\Resources\ApartmentMembershipResource;
 use App\Http\Resources\ApartmentUserLookupResource;
-use App\Http\Resources\RelatedApartmentResource;
 use App\Models\User;
 use App\Services\Contracts\ApartmentServiceInterface;
 use App\Services\Contracts\ApartmentUserServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ApartmentUserController extends Controller
+class ApartmentUserController extends AbstractActiveApartmentController
 {
     public function __construct(
         private readonly ApartmentServiceInterface $apartmentService,
         private readonly ApartmentUserServiceInterface $apartmentUserService,
     ) {
+        parent::__construct($this->apartmentService);
     }
 
     public function findByEmail(ApartmentUserFindByEmailRequest $request): JsonResponse
@@ -90,7 +89,7 @@ class ApartmentUserController extends Controller
                 $request->validated('role')
             );
 
-            return (new ApartmentMembershipResource($result))
+            return new ApartmentMembershipResource($result)
                 ->response()
                 ->setStatusCode(201);
         } catch (ApartmentHeaderMissingException $e) {
@@ -163,10 +162,5 @@ class ApartmentUserController extends Controller
         } catch (ApartmentMembershipNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
-    }
-
-    private function resolveManagedApartment(Request $request): ManagedApartmentDto
-    {
-        return $this->apartmentService->getManagedApartment($request);
     }
 }

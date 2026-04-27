@@ -8,14 +8,12 @@ use App\Dto\Apartment\ManagedApartmentDto;
 use App\Dto\Apartment\RelatedApartmentDto;
 use App\Enums\ApartmentUserRoleEnum;
 use App\Exceptions\Apartment\ApartmentAccessDeniedException;
-use App\Exceptions\Apartment\ApartmentHeaderMissingException;
 use App\Exceptions\Apartment\ApartmentNotFoundException;
 use App\Exceptions\Apartment\UnauthenticatedException;
 use App\Models\Apartment;
 use App\Repositories\Contracts\ApartmentRepositoryInterface;
 use App\Repositories\Contracts\ApartmentUserRepositoryInterface;
 use App\Services\Contracts\ApartmentServiceInterface;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 readonly class ApartmentService implements ApartmentServiceInterface
@@ -51,28 +49,15 @@ readonly class ApartmentService implements ApartmentServiceInterface
         $this->apartmentRepository->deleteForOwner($apartment);
     }
 
-    public function getManagedApartment(Request $request): ManagedApartmentDto
+    public function getManagedApartment(?int $authUserId, int $apartmentId): ManagedApartmentDto
     {
-        /** @var \App\Models\User|null $authUser */
-        $authUser = $request->user();
-        if ($authUser === null) {
-            throw new UnauthenticatedException();
-        }
-
-        $apartmentHeader = $request->header('apartment');
-        if ($apartmentHeader === null || ! is_numeric($apartmentHeader)) {
-            throw new ApartmentHeaderMissingException();
-        }
-
-        $apartmentId = (int) $apartmentHeader;
-
         /** @var Apartment|null $apartment */
         $apartment = $this->apartmentRepository->find($apartmentId);
         if ($apartment === null) {
             throw new ApartmentNotFoundException();
         }
 
-        if ($apartment->owner_id === $authUser->id) {
+        if ($apartment->owner_id === $authUserId) {
             return new ManagedApartmentDto(
                 apartment: $apartment,
                 isOwner: true,
@@ -80,7 +65,7 @@ readonly class ApartmentService implements ApartmentServiceInterface
             );
         }
 
-        $membership = $this->apartmentUserRepository->findByApartmentIdAndUserId($apartmentId, $authUser->id);
+        $membership = $this->apartmentUserRepository->findByApartmentIdAndUserId($apartmentId, $authUserId);
         if ($membership !== null && $membership->role === ApartmentUserRoleEnum::ADMIN->value) {
             return new ManagedApartmentDto(
                 apartment: $apartment,

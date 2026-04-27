@@ -3,7 +3,10 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ApartmentController;
 use App\Http\Controllers\Api\ApartmentUserController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ContactVerificationController;
+use App\Http\Controllers\Api\DepartmentController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,4 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/apartment-users/{userId}', [ApartmentUserController::class, 'removeUserFromApartment']);
     Route::delete('/apartment-users/self/disconnect/{apartmentId}', [ApartmentUserController::class, 'disconnectFromApartment']);
     Route::get('/apartment-users', [ApartmentUserController::class, 'getUsers']);
+    Route::apiResource('/departments', DepartmentController::class);
+    Route::apiResource('/categories', CategoryController::class);
+    Route::apiResource('/products', ProductController::class);
 });

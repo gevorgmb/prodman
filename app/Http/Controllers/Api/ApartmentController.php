@@ -13,7 +13,6 @@ use App\Models\User;
 use App\Services\Contracts\ApartmentServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ApartmentController extends Controller
 {
@@ -47,7 +46,7 @@ class ApartmentController extends Controller
 
         $apartment = $this->apartmentService->createForOwner($authUser->id, $request->validated());
 
-        return (new ApartmentResource($apartment))
+        return new ApartmentResource($apartment)
             ->response()
             ->setStatusCode(201);
     }
