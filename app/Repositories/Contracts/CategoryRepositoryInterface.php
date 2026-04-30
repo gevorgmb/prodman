@@ -7,7 +7,7 @@ namespace App\Repositories\Contracts;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
 
-interface CategoryRepositoryInterface
+interface CategoryRepositoryInterface extends EloquentRepositoryInterface
 {
     public function getAllByApartmentId(int $apartmentId): Collection;
 

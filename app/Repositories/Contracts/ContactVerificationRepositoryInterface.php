@@ -6,7 +6,7 @@ namespace App\Repositories\Contracts;
 
 use App\Enums\ContactTypeEnum;
 
-interface ContactVerificationRepositoryInterface
+interface ContactVerificationRepositoryInterface extends EloquentRepositoryInterface
 {
     public function verifyCode(int $userId, string $code, ContactTypeEnum $contactType): bool;
 
