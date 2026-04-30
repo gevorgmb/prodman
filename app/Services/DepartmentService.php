@@ -21,7 +21,7 @@ readonly class DepartmentService implements DepartmentServiceInterface
     {
         return $this->departmentRepository
             ->getAllByApartmentId($apartmentId)
-            ->map(fn ($department) => DepartmentDto::fromModel($department))
+            ->map(fn($department) => DepartmentDto::fromModel($department))
             ->values();
     }
 

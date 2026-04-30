@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\AcquisitionController;
+use App\Http\Controllers\Api\AcquisitionItemController;
+use App\Http\Controllers\Api\ArchivedAcquisitionItemController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ApartmentController;
 use App\Http\Controllers\Api\ApartmentUserController;
@@ -7,6 +10,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ContactVerificationController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\StockProductController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,4 +33,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/departments', DepartmentController::class);
     Route::apiResource('/categories', CategoryController::class);
     Route::apiResource('/products', ProductController::class);
+
+    Route::apiResource('acquisitions', AcquisitionController::class);
+    Route::apiResource('acquisitions.items', AcquisitionItemController::class);
+    Route::controller(StockProductController::class)->group(function () {
+        Route::get('stock-products', 'index');
+        Route::get('stock-products/{id}', 'show');
+    });
+    Route::controller(ArchivedAcquisitionItemController::class)->group(function () {
+        Route::get('archived-acquisition-items', 'index');
+        Route::get('archived-acquisition-items/{id}', 'show');
+    });
 });

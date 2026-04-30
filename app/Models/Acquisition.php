@@ -10,24 +10,22 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
-#[Fillable(['apartment_id', 'name', 'importance', 'category_id', 'department_id', 'description'])]
+#[Fillable(['apartment_id', 'store_name', 'description', 'status', 'user_id'])]
 /**
  * @property int $id
  * @property int $apartment_id
- * @property string $name
- * @property int $importance
- * @property int|null $category_id
- * @property int|null $department_id
+ * @property string $store_name
  * @property string|null $description
+ * @property string $status
+ * @property int $user_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-class Product extends Model
+class Acquisition extends Model
 {
     protected function casts(): array
     {
         return [
-            'importance' => 'integer',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
@@ -38,18 +36,13 @@ class Product extends Model
         return $this->belongsTo(Apartment::class, 'apartment_id');
     }
 
-    public function category(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function department(): BelongsTo
+    public function items(): HasMany
     {
-        return $this->belongsTo(Department::class, 'department_id');
-    }
-
-    public function stockProducts(): HasMany
-    {
-        return $this->hasMany(StockProduct::class, 'product_id');
+        return $this->hasMany(AcquisitionItem::class, 'acquisition_id');
     }
 }
