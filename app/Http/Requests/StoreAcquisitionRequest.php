@@ -16,7 +16,7 @@ class StoreAcquisitionRequest extends FormRequest
         return [
             'storeName' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'nullable|string|in:draft,active,complete,canceled',
+            'status' => 'nullable|string|in:draft,complete',
         ];
     }
 }
