@@ -9,6 +9,7 @@ use App\Enums\AcquisitionStatusEnum;
 use App\Events\AcquisitionCompleteEvent;
 use App\Models\Acquisition;
 use App\Repositories\Contracts\AcquisitionRepositoryInterface;
+use App\Services\Contracts\AcquisitionItemServiceInterface;
 use App\Services\Contracts\AcquisitionServiceInterface;
 use Illuminate\Support\Collection;
 use RuntimeException;
@@ -16,7 +17,8 @@ use RuntimeException;
 readonly class AcquisitionService implements AcquisitionServiceInterface
 {
     public function __construct(
-        private AcquisitionRepositoryInterface $acquisitionRepository,
+        private AcquisitionRepositoryInterface  $acquisitionRepository,
+        private AcquisitionItemServiceInterface $acquisitionItemService,
     ) {
     }
 
@@ -44,6 +46,9 @@ readonly class AcquisitionService implements AcquisitionServiceInterface
         $acquisition = $this->acquisitionRepository->create(
             AcquisitionDto::fromRequest($data)
         );
+        if (! empty($data['items'])) {
+            $this->acquisitionItemService->bulkCreate($data['items'], $acquisition->id);
+        }
 
         return AcquisitionDto::fromModel($acquisition);
     }
@@ -70,6 +75,10 @@ readonly class AcquisitionService implements AcquisitionServiceInterface
         }
 
         $updatedAcquisition = $this->acquisitionRepository->update($acquisition, $data);
+
+        if (!empty($data['items'])) {
+            $this->acquisitionItemService->bulkUpdate($data['items'], $updatedAcquisition->id);
+        }
 
         if (
             $oldStatus !== AcquisitionStatusEnum::COMPLETE->value

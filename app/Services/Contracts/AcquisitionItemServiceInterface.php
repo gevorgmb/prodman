@@ -18,6 +18,10 @@ interface AcquisitionItemServiceInterface
 
     public function create(array $data, int $acquisitionId): AcquisitionItemDto;
 
+    public function bulkCreate(array $data, int $acquisitionId): void;
+
+    public function bulkUpdate(array $data, int $acquisitionId): void;
+
     public function update(int $id, int $acquisitionId, array $data): AcquisitionItemDto;
 
     public function delete(int $id, int $acquisitionId): void;

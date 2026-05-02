@@ -42,6 +42,36 @@ class AcquisitionItemRepository extends BaseRepository implements AcquisitionIte
         return $item;
     }
 
+    public function insert(array $data): array
+    {
+        if (empty($data)) {
+            return [];
+        }
+
+        $query = $this->itemModel->newQuery();
+        $builder = $query->getQuery();
+        $grammar = $builder->getGrammar();
+
+        $sql = $grammar->compileInsert($builder, $data) . ' returning id';
+
+        $bindings = collect($data)->flatMap(fn($row) => array_values($row))->all();
+
+        $results = $query->getConnection()->select($sql, $bindings);
+
+        return array_map(fn($row) => (int) $row->id, $results);
+    }
+
+    public function bulkDelete(array $ids): bool
+    {
+        if (empty($ids)) {
+            return true;
+        }
+
+        $this->itemModel->newQuery()->whereIn('id', $ids)->delete();
+
+        return true;
+    }
+
     public function update(AcquisitionItem $item, array $data): AcquisitionItem
     {
         $item->fill($data);

@@ -15,6 +15,10 @@ interface AcquisitionItemRepositoryInterface extends EloquentRepositoryInterface
 
     public function create(array $data): AcquisitionItem;
 
+    public function insert(array $data): array;
+
+    public function bulkDelete(array $ids): bool;
+
     public function update(AcquisitionItem $item, array $data): AcquisitionItem;
 
     public function delete(AcquisitionItem $item): void;

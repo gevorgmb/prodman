@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Services\Contracts\CategoryServiceInterface;
 use Illuminate\Support\Collection;
+use RuntimeException;
 
 readonly class CategoryService implements CategoryServiceInterface
 {
@@ -19,6 +20,7 @@ readonly class CategoryService implements CategoryServiceInterface
 
     public function getAllByApartmentId(int $apartmentId): Collection
     {
+        /** @var Category $category */
         return $this->categoryRepository->getAllByApartmentId($apartmentId)
             ->map(fn ($category) => CategoryDto::fromModel($category))
             ->values();
@@ -41,10 +43,10 @@ readonly class CategoryService implements CategoryServiceInterface
 
     public function update(int $id, array $data): CategoryDto
     {
-        /** @var Category $category */
+        /** @var ?Category $category */
         $category = $this->categoryRepository->find($id);
         if ($category === null) {
-            throw new \RuntimeException('Category not found.');
+            throw new RuntimeException('Category not found.');
         }
 
         return CategoryDto::fromModel($this->categoryRepository->update($category, $data));
@@ -52,10 +54,10 @@ readonly class CategoryService implements CategoryServiceInterface
 
     public function delete(int $id, int $apartmentId): void
     {
-        /** @var Category $category */
+        /** @var ?Category $category */
         $category = $this->categoryRepository->findByIdAndApartmentId($id, $apartmentId);
         if ($category === null) {
-            throw new \RuntimeException('Category not found.');
+            throw new RuntimeException('Category not found.');
         }
 
         $this->categoryRepository->delete($category);
