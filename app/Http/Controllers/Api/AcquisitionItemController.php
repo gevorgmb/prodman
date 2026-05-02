@@ -8,10 +8,10 @@ use App\Http\Controllers\AbstractActiveApartmentController;
 use App\Http\Requests\StoreAcquisitionItemRequest;
 use App\Http\Requests\UpdateAcquisitionItemRequest;
 use App\Http\Resources\AcquisitionItem\AcquisitionItemResource;
-use App\Services\ApartmentService;
 use App\Services\Contracts\AcquisitionItemServiceInterface;
 use App\Services\Contracts\AcquisitionServiceInterface;
 use App\Services\Contracts\ApartmentServiceInterface;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -29,7 +29,7 @@ class AcquisitionItemController extends AbstractActiveApartmentController
     {
         try {
             $managedApartment = $this->resolveManagedApartment($request);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 422);
         }
 

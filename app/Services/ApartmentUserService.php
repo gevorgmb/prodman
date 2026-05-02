@@ -14,6 +14,7 @@ use App\Exceptions\Apartment\OwnerCannotDisconnectException;
 use App\Exceptions\Apartment\UserAlreadyInApartmentException;
 use App\Exceptions\Apartment\UserNotFoundException;
 use App\Models\Apartment;
+use App\Models\ApartmentUser;
 use App\Models\User;
 use App\Repositories\Contracts\ApartmentRepositoryInterface;
 use App\Repositories\Contracts\ApartmentUserRepositoryInterface;
@@ -62,7 +63,7 @@ readonly class ApartmentUserService implements ApartmentUserServiceInterface
 
     public function addUserToApartment(Apartment $apartment, int $targetUserId, ?string $role): ApartmentMembershipDto
     {
-        $resolvedRole = ApartmentUserRoleEnum::roleByValue((string) $role) ?? ApartmentUserRoleEnum::MEMBER;
+        $resolvedRole = ApartmentUserRoleEnum::roleByValue((string) $role);
 
         $existing = $this->apartmentUserRepository->findByApartmentIdAndUserId($apartment->id, $targetUserId);
         if ($existing !== null) {
@@ -81,6 +82,7 @@ readonly class ApartmentUserService implements ApartmentUserServiceInterface
 
     public function getUsers(Apartment $apartment): Collection
     {
+        /** @var Collection<int, ApartmentUser> $members */
         $members = $this->apartmentUserRepository->getUsersByApartmentId($apartment->id);
 
         return $members->map(function ($member) {

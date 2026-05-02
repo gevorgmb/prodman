@@ -22,6 +22,7 @@ class StockProductService implements StockProductServiceInterface
      */
     public function getAllByApartmentId(int $apartmentId): Collection
     {
+        /** @var StockProduct $product */
         return $this->productRepository->getAllByApartmentId($apartmentId)
             ->map(fn (StockProduct $product) => StockProductDto::fromModel($product));
     }
@@ -36,7 +37,7 @@ class StockProductService implements StockProductServiceInterface
     public function create(array $data, int $apartmentId): StockProductDto
     {
         $data['apartment_id'] = $apartmentId;
-        
+
         if (isset($data['itemId'])) {
             $data['item_id'] = $data['itemId'];
         }

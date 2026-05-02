@@ -82,6 +82,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(AcquisitionServiceInterface::class, function ($app) {
             return new AcquisitionService(
                 $app->make(AcquisitionRepositoryInterface::class),
+                $app->make(AcquisitionItemServiceInterface::class),
             );
         });
 
