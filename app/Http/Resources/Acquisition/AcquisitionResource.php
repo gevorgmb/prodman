@@ -20,6 +20,7 @@ class AcquisitionResource extends JsonResource
             'description' => $this->resource->description,
             'status' => $this->resource->status->value,
             'userId' => $this->resource->userId,
+            'currencyId' => $this->resource->currencyId,
             'createdAt' => $this->resource->createdAt,
             'updatedAt' => $this->resource->updatedAt,
         ];

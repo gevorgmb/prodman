@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Dto\Product\ProductDto;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
-#[Fillable(['apartment_id', 'item_id', 'product_id', 'product_name', 'quantity', 'quantity_used', 'expiration_date'])]
+#[Fillable(['apartment_id', 'item_id', 'product_id', 'product_name', 'quantity', 'quantity_used', 'expiration_date', 'min', 'unit'])]
 /**
  * @property int $id
  * @property int $apartment_id
@@ -19,6 +20,9 @@ use Illuminate\Support\Carbon;
  * @property float $quantity
  * @property float $quantity_used
  * @property Carbon $expiration_date
+ * @property ?Product $product
+ * @property float $min
+ * @property string $unit
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -30,6 +34,7 @@ class StockProduct extends Model
             'quantity' => 'float',
             'quantity_used' => 'float',
             'expiration_date' => 'datetime',
+            'min' => 'float',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

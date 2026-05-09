@@ -14,6 +14,7 @@ use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\Contracts\AcquisitionRepositoryInterface;
 use App\Repositories\Contracts\AcquisitionItemRepositoryInterface;
 use App\Repositories\Contracts\StockProductRepositoryInterface;
+use App\Repositories\Contracts\CurrencyRepositoryInterface;
 use App\Repositories\Contracts\ArchivedAcquisitionItemRepositoryInterface;
 use App\Services\AcquisitionItemService;
 use App\Services\AcquisitionService;
@@ -21,12 +22,14 @@ use App\Services\ApartmentService;
 use App\Services\ApartmentUserService;
 use App\Services\ArchivedAcquisitionItemService;
 use App\Services\CategoryService;
+use App\Services\CurrencyService;
 use App\Services\Contracts\AcquisitionItemServiceInterface;
 use App\Services\Contracts\AcquisitionServiceInterface;
 use App\Services\Contracts\ApartmentServiceInterface;
 use App\Services\Contracts\ApartmentUserServiceInterface;
 use App\Services\Contracts\ArchivedAcquisitionItemServiceInterface;
 use App\Services\Contracts\CategoryServiceInterface;
+use App\Services\Contracts\CurrencyServiceInterface;
 use App\Services\Contracts\DepartmentServiceInterface;
 use App\Services\Contracts\ProductServiceInterface;
 use App\Services\Contracts\StockProductServiceInterface;
@@ -101,6 +104,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ArchivedAcquisitionItemServiceInterface::class, function ($app) {
             return new ArchivedAcquisitionItemService(
                 $app->make(ArchivedAcquisitionItemRepositoryInterface::class),
+            );
+        });
+        $this->app->singleton(CurrencyServiceInterface::class, function ($app) {
+            return new CurrencyService(
+                $app->make(CurrencyRepositoryInterface::class),
             );
         });
     }

@@ -19,6 +19,8 @@ class StoreStockProductRequest extends FormRequest
             'quantity' => 'required|numeric|min:0',
             'quantityUsed' => 'required|numeric|min:0',
             'expirationDate' => 'required|date',
+            'min' => 'sometimes|numeric|min:0',
+            'unit' => 'sometimes|string|max:50',
         ];
     }
 }

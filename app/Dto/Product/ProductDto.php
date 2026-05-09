@@ -17,6 +17,8 @@ readonly class ProductDto
         public ?int $categoryId,
         public ?int $departmentId,
         public ?string $description,
+        public float $min,
+        public string $unit,
         public ?Carbon $createdAt,
         public ?Carbon $updatedAt,
     ) {
@@ -32,6 +34,8 @@ readonly class ProductDto
             categoryId: $product->category_id,
             departmentId: $product->department_id,
             description: $product->description,
+            min: $product->min,
+            unit: $product->unit,
             createdAt: $product->created_at,
             updatedAt: $product->updated_at,
         );

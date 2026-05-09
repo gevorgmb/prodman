@@ -23,6 +23,7 @@ class AcquisitionItemResource extends JsonResource
             'quantity' => $this->resource->quantity,
             'price' => $this->resource->price,
             'total' => $this->resource->total,
+            'unit' => $this->resource->unit,
             'createdAt' => $this->resource->createdAt,
             'updatedAt' => $this->resource->updatedAt,
         ];

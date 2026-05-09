@@ -24,7 +24,7 @@ class StockProductService implements StockProductServiceInterface
     {
         /** @var StockProduct $product */
         return $this->productRepository->getAllByApartmentId($apartmentId)
-            ->map(fn (StockProduct $product) => StockProductDto::fromModel($product));
+            ->map(fn(StockProduct $product) => StockProductDto::fromModel($product));
     }
 
     public function findByIdAndApartmentId(int $id, int $apartmentId): ?StockProductDto

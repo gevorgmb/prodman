@@ -19,6 +19,8 @@ class UpdateStockProductRequest extends FormRequest
             'quantity' => 'sometimes|required|numeric|min:0',
             'quantityUsed' => 'sometimes|required|numeric|min:0',
             'expirationDate' => 'sometimes|required|date',
+            'min' => 'sometimes|numeric|min:0',
+            'unit' => 'sometimes|string|max:50',
         ];
     }
 }

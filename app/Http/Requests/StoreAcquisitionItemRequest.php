@@ -20,6 +20,7 @@ class StoreAcquisitionItemRequest extends FormRequest
             'expirationDate' => 'nullable|date|after_or_equal:today',
             'quantity' => 'required|numeric|min:0',
             'price' => 'required|numeric|min:0',
+            'unit' => 'sometimes|string|max:50',
         ];
     }
 }

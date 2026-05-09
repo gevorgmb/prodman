@@ -23,6 +23,8 @@ class ProductResource extends JsonResource
             'categoryId' => $this->categoryId,
             'departmentId' => $this->departmentId,
             'description' => $this->description,
+            'min' => $this->min,
+            'unit' => $this->unit,
         ];
     }
 }

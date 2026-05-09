@@ -19,6 +19,7 @@ readonly class AcquisitionItemDto
         public float $quantity,
         public float $price,
         public float $total,
+        public string $unit,
         public ?Carbon $createdAt,
         public ?Carbon $updatedAt,
     ) {
@@ -36,6 +37,7 @@ readonly class AcquisitionItemDto
             quantity: $item->quantity,
             price: $item->price,
             total: $item->total,
+            unit: $item->unit,
             createdAt: $item->created_at,
             updatedAt: $item->updated_at,
         );

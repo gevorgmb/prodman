@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Dto\AcquisitionItem\AcquisitionItemDto;
+use App\Enums\AcquisitionItemActionEnum;
 use App\Models\AcquisitionItem;
 use App\Repositories\Contracts\AcquisitionItemRepositoryInterface;
 use App\Services\Contracts\AcquisitionItemServiceInterface;
@@ -53,21 +54,30 @@ readonly class AcquisitionItemService implements AcquisitionItemServiceInterface
     public function bulkUpdate(array $data, int $acquisitionId): void
     {
         $collectedData = [];
-        foreach ($data as $key => $itemData) {
-            if (($itemData['action'] ?? 'create') === 'create') {
+        foreach ($data as $itemData) {
+            if (
+                !isset($itemData['action'])
+                || AcquisitionItemActionEnum::CREATE->value === $itemData['action']
+            ) {
                 $collectedData['create'][] = $this->buildCreateData($itemData, $acquisitionId);
-            } elseif ($itemData['action'] === 'update') {
+            } elseif (
+                $itemData['action'] === AcquisitionItemActionEnum::UPDATE->value
+            ) {
                 $updateData = $this->buildUpdateData($itemData, $acquisitionId);
                 $this->update((int)$itemData['itemId'], $acquisitionId, $updateData);
             } else {
-                $collectedData['delete'][$itemData['itemId']] = $itemData['itemId'];
+                $collectedData[AcquisitionItemActionEnum::DELETE->value][$itemData['itemId']] = $itemData['itemId'];
             }
         }
-        if (! empty($collectedData['create'])) {
-            $this->itemRepository->insert($collectedData['create']);
+        if (! empty($collectedData[AcquisitionItemActionEnum::CREATE->value])) {
+            $this->itemRepository->insert(
+                $collectedData[AcquisitionItemActionEnum::CREATE->value]
+            );
         }
-        if (! empty($collectedData['delete'])) {
-            $this->itemRepository->bulkDelete($collectedData['delete']);
+        if (! empty($collectedData[AcquisitionItemActionEnum::DELETE->value])) {
+            $this->itemRepository->bulkDelete(
+                $collectedData[AcquisitionItemActionEnum::DELETE->value]
+            );
         }
     }
 
@@ -109,7 +119,7 @@ readonly class AcquisitionItemService implements AcquisitionItemServiceInterface
         }
     }
 
-    private function buildCreateData(array $data, int $acquisitionId): array
+    public function buildCreateData(array $data, int $acquisitionId): array
     {
         return [
             'acquisition_id' => $acquisitionId,
@@ -120,10 +130,11 @@ readonly class AcquisitionItemService implements AcquisitionItemServiceInterface
             'description' => $data['description'] ?? null,
             'product_name' => $data['productName'],
             'expiration_date' => $data['expirationDate'] ?? null,
+            'unit' => $data['unit'] ?? 'kg',
         ];
     }
 
-    private function buildUpdateData(array $data, int $acquisitionId): array
+    public function buildUpdateData(array $data, int $acquisitionId): array
     {
         $result = [];
         if (isset($data['productId'])) {
@@ -143,6 +154,9 @@ readonly class AcquisitionItemService implements AcquisitionItemServiceInterface
         }
         if (isset($data['description'])) {
             $result['description'] = $data['description'];
+        }
+        if (isset($data['unit'])) {
+            $result['unit'] = $data['unit'];
         }
         return $result;
     }
