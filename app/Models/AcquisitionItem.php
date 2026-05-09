@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
-#[Fillable(['acquisition_id', 'product_id', 'product_name', 'description', 'expiration_date', 'quantity', 'price', 'total'])]
+#[Fillable(['acquisition_id', 'product_id', 'product_name', 'description', 'expiration_date', 'quantity', 'price', 'total', 'unit'])]
 /**
  * @property int $id
  * @property int $acquisition_id
@@ -20,6 +20,7 @@ use Illuminate\Support\Carbon;
  * @property float $quantity
  * @property float $price
  * @property float $total
+ * @property string $unit
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */

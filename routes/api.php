@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ApartmentController;
 use App\Http\Controllers\Api\ApartmentUserController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ContactVerificationController;
+use App\Http\Controllers\Api\CurrencyController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\StockProductController;
@@ -33,12 +34,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/departments', DepartmentController::class);
     Route::apiResource('/categories', CategoryController::class);
     Route::apiResource('/products', ProductController::class);
+    Route::get('/currencies', [CurrencyController::class, 'index']);
 
     Route::apiResource('acquisitions', AcquisitionController::class);
     Route::apiResource('acquisitions.items', AcquisitionItemController::class);
     Route::controller(StockProductController::class)->group(function () {
         Route::get('stock-products', 'index');
         Route::get('stock-products/{id}', 'show');
+        Route::patch('stock-products/{id}', '');
     });
     Route::controller(ArchivedAcquisitionItemController::class)->group(function () {
         Route::get('archived-acquisition-items', 'index');

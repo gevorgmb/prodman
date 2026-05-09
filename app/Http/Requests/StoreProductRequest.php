@@ -30,6 +30,8 @@ class StoreProductRequest extends FormRequest
             'categoryId' => 'nullable|integer|exists:categories,id',
             'departmentId' => 'nullable|integer|exists:departments,id',
             'description' => 'nullable|string',
+            'min' => 'sometimes|numeric|min:0',
+            'unit' => 'sometimes|string|max:50',
         ];
     }
 }

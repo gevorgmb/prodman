@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Dto\Acquisition\AcquisitionDto;
+use App\Enums\AcquisitionItemActionEnum;
 use App\Enums\AcquisitionStatusEnum;
 use App\Events\AcquisitionCompleteEvent;
 use App\Models\Acquisition;
@@ -49,6 +50,9 @@ readonly class AcquisitionService implements AcquisitionServiceInterface
         if (! empty($data['items'])) {
             $this->acquisitionItemService->bulkCreate($data['items'], $acquisition->id);
         }
+        if ($acquisition->status === AcquisitionStatusEnum::COMPLETE->value) {
+            event(new AcquisitionCompleteEvent($acquisition->id));
+        }
 
         return AcquisitionDto::fromModel($acquisition);
     }
@@ -74,17 +78,28 @@ readonly class AcquisitionService implements AcquisitionServiceInterface
             // If we are here, we are changing from COMPLETE to CANCELLED, which is allowed.
         }
 
-        $updatedAcquisition = $this->acquisitionRepository->update($acquisition, $data);
+//        if (isset($data['currencyId'])) {
+//            $data['currency_id'] = $data['currencyId'];
+//        }
 
         if (!empty($data['items'])) {
-            $this->acquisitionItemService->bulkUpdate($data['items'], $updatedAcquisition->id);
+            $this->acquisitionItemService->bulkUpdate($data['items'], $id);
         }
+
+        if (isset($data['status']) && $data['status'] === AcquisitionStatusEnum::COMPLETE->value) {
+            $items = $this->acquisitionItemService->getAllByAcquisitionId($id);
+            if ($items->isEmpty()) {
+                throw new RuntimeException('Cannot complete an acquisition with no items.');
+            }
+        }
+
+        $updatedAcquisition = $this->acquisitionRepository->update($acquisition, $data);
 
         if (
             $oldStatus !== AcquisitionStatusEnum::COMPLETE->value
             && $updatedAcquisition->status === AcquisitionStatusEnum::COMPLETE->value
         ) {
-            AcquisitionCompleteEvent::dispatch($updatedAcquisition->id);
+            event(new AcquisitionCompleteEvent($updatedAcquisition->id));
         }
 
         return AcquisitionDto::fromModel($updatedAcquisition);

@@ -20,6 +20,7 @@ class UpdateAcquisitionItemRequest extends FormRequest
             'expirationDate' => 'nullable|date',
             'quantity' => 'sometimes|required|numeric|min:0',
             'price' => 'sometimes|required|numeric|min:0',
+            'unit' => 'sometimes|string|max:50',
         ];
     }
 }

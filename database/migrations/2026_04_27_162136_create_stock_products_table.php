@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('apartment_id');
             $table->bigInteger('item_id');
-            $table->bigInteger('product_id')->unsigned();
+            $table->bigInteger('product_id')->nullable();
             $table->string('product_name');
             $table->decimal('quantity', 10, 2);
             $table->decimal('quantity_used', 10, 2);
-            $table->timestamp('expiration_date');
+            $table->timestamp('expiration_date')->nullable();
             $table->foreign('apartment_id')
                 ->references('id')
                 ->on('apartments')

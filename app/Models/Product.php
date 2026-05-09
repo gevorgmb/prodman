@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
-#[Fillable(['apartment_id', 'name', 'importance', 'category_id', 'department_id', 'description'])]
+#[Fillable(['apartment_id', 'name', 'importance', 'category_id', 'department_id', 'description', 'min', 'unit'])]
 /**
  * @property int $id
  * @property int $apartment_id
@@ -19,6 +19,8 @@ use Illuminate\Support\Carbon;
  * @property int|null $category_id
  * @property int|null $department_id
  * @property string|null $description
+ * @property float $min
+ * @property string $unit
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -28,6 +30,7 @@ class Product extends Model
     {
         return [
             'importance' => 'integer',
+            'min' => 'float',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

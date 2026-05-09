@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
-#[Fillable(['apartment_id', 'store_name', 'description', 'status', 'user_id'])]
+#[Fillable(['apartment_id', 'store_name', 'description', 'status', 'user_id', 'currency_id'])]
 /**
  * @property int $id
  * @property int $apartment_id
@@ -18,6 +18,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $description
  * @property string $status
  * @property int $user_id
+ * @property int|null $currency_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -26,6 +27,7 @@ class Acquisition extends Model
     protected function casts(): array
     {
         return [
+            'currency_id' => 'integer',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
@@ -34,6 +36,11 @@ class Acquisition extends Model
     public function apartment(): BelongsTo
     {
         return $this->belongsTo(Apartment::class, 'apartment_id');
+    }
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class, 'currency_id');
     }
 
     public function user(): BelongsTo

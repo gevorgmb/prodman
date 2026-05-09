@@ -17,13 +17,15 @@ class UpdateAcquisitionRequest extends FormRequest
             'storeName' => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
             'status' => 'sometimes|required|string|in:draft,complete,cancelled',
-            'items' => 'required|array',
+            'currencyId' => 'nullable|integer|exists:currencies,id',
+            'items' => 'nullable|array',
             'items.*.action' => 'nullable|string|in:create,update,delete',
             'items.*.itemId' => [
                 'required_if:items.*.action,update,delete',
                 'nullable',
                 'integer',
                 'exists:acquisition_items,id',
+                'distinct',
             ],
             'items.*.productId' => 'sometimes|nullable|integer|exists:products,id',
             'items.*.productName' => [
@@ -49,6 +51,7 @@ class UpdateAcquisitionRequest extends FormRequest
                 'numeric',
                 'min:0',
             ],
+            'items.*.unit' => 'sometimes|string|max:50',
         ];
     }
 

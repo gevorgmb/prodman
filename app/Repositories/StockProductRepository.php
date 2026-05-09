@@ -19,6 +19,7 @@ class StockProductRepository extends BaseRepository implements StockProductRepos
     public function getAllByApartmentId(int $apartmentId): Collection
     {
         return $this->productModel->newQuery()
+            ->with('product')
             ->where('apartment_id', $apartmentId)
             ->get();
     }
@@ -27,6 +28,7 @@ class StockProductRepository extends BaseRepository implements StockProductRepos
     {
         /** @var StockProduct|null $product */
         $product = $this->productModel->newQuery()
+            ->with('product')
             ->where('id', $id)
             ->where('apartment_id', $apartmentId)
             ->first();

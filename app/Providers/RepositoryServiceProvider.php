@@ -24,6 +24,7 @@ use App\Repositories\Contracts\ApartmentUserRepositoryInterface;
 use App\Repositories\Contracts\ArchivedAcquisitionItemRepositoryInterface;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Repositories\Contracts\ContactVerificationRepositoryInterface;
+use App\Repositories\Contracts\CurrencyRepositoryInterface;
 use App\Repositories\Contracts\DepartmentRepositoryInterface;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\StockProductRepositoryInterface;
@@ -31,6 +32,7 @@ use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\DepartmentRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\StockProductRepository;
+use App\Repositories\CurrencyRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -84,6 +86,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->singleton(
             ArchivedAcquisitionItemRepositoryInterface::class,
             ArchivedAcquisitionItemRepository::class
+        );
+        $this->app->singleton(
+            CurrencyRepositoryInterface::class,
+            CurrencyRepository::class
         );
     }
 

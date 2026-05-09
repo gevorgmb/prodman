@@ -55,4 +55,11 @@ class StockProductController extends AbstractActiveApartmentController
             'stockProduct' => new StockProductResource($product),
         ]);
     }
+
+    public function useProduct(int $id, Request $request): JsonResponse
+    {
+        return response()->json([
+            'stockProduct' => new StockProductResource($product),
+        ]);
+    }
 }

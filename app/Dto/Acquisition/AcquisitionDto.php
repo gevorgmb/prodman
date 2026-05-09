@@ -17,6 +17,7 @@ readonly class AcquisitionDto
         public ?string $description,
         public ?AcquisitionStatusEnum $status,
         public ?int $userId,
+        public ?int $currencyId,
         public ?Carbon $createdAt,
         public ?Carbon $updatedAt,
     ) {
@@ -31,6 +32,7 @@ readonly class AcquisitionDto
             description: $acquisition->description,
             status: AcquisitionStatusEnum::fromString($acquisition->status),
             userId: $acquisition->user_id,
+            currencyId: $acquisition->currency_id,
             createdAt: $acquisition->created_at,
             updatedAt: $acquisition->updated_at,
         );
@@ -45,6 +47,7 @@ readonly class AcquisitionDto
             description: $acquisition['description'] ?? null,
             status: AcquisitionStatusEnum::fromString($acquisition['status'] ?? null),
             userId: $acquisition['userId'] ?? null,
+            currencyId: $acquisition['currencyId'] ?? null,
             createdAt: $acquisition['createdAt'] ?? now(),
             updatedAt: $acquisition['updatedAt'] ?? now(),
         );
@@ -58,6 +61,7 @@ readonly class AcquisitionDto
             'description' => $this->description,
             'status' => $this->status->value,
             'user_id' => $this->userId,
+            'currency_id' => $this->currencyId,
             'created_at' => $this->createdAt,
             'updated_at' => $this->updatedAt,
         ];
