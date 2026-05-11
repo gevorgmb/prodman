@@ -32,6 +32,7 @@ class UpdateProductRequest extends FormRequest
             'description' => 'nullable|string',
             'min' => 'sometimes|numeric|min:0',
             'unit' => 'sometimes|string|max:50',
+            'mergeStock' => 'sometimes|boolean',
         ];
     }
 }

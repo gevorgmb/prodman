@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\AbstractActiveApartmentController;
 use App\Http\Requests\StoreStockProductRequest;
 use App\Http\Requests\UpdateStockProductRequest;
+use App\Http\Requests\UseProductRequest;
 use App\Http\Resources\StockProduct\StockProductResource;
 use App\Services\Contracts\ApartmentServiceInterface;
 use App\Services\Contracts\StockProductServiceInterface;
@@ -56,7 +57,7 @@ class StockProductController extends AbstractActiveApartmentController
         ]);
     }
 
-    public function useProduct(int $id, Request $request): JsonResponse
+    public function useProduct(int $id, UseProductRequest $request): JsonResponse
     {
         return response()->json([
             'stockProduct' => new StockProductResource($product),

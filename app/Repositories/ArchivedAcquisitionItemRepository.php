@@ -42,6 +42,11 @@ class ArchivedAcquisitionItemRepository extends BaseRepository implements Archiv
         return $item;
     }
 
+    public function bulkInsert(array $data): void
+    {
+        $this->itemModel->newQuery()->insert($data);
+    }
+
     public function update(ArchivedAcquisitionItem $item, array $data): ArchivedAcquisitionItem
     {
         $item->fill($data);

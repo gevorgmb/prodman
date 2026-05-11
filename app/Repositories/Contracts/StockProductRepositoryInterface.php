@@ -13,9 +13,13 @@ interface StockProductRepositoryInterface extends EloquentRepositoryInterface
 
     public function findByIdAndApartmentId(int $id, int $apartmentId): ?StockProduct;
 
+    public function findByProductId(int $productId): Collection;
+
     public function create(array $data): StockProduct;
 
     public function update(StockProduct $product, array $data): StockProduct;
 
     public function delete(StockProduct $product): void;
+
+    public function bulkDelete(array $ids): void;
 }

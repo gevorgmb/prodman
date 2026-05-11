@@ -10,10 +10,10 @@ use App\Repositories\Contracts\ArchivedAcquisitionItemRepositoryInterface;
 use App\Services\Contracts\ArchivedAcquisitionItemServiceInterface;
 use Illuminate\Support\Collection;
 
-class ArchivedAcquisitionItemService implements ArchivedAcquisitionItemServiceInterface
+readonly class ArchivedAcquisitionItemService implements ArchivedAcquisitionItemServiceInterface
 {
     public function __construct(
-        private readonly ArchivedAcquisitionItemRepositoryInterface $itemRepository,
+        private ArchivedAcquisitionItemRepositoryInterface $itemRepository,
     ) {
     }
 
@@ -44,6 +44,11 @@ class ArchivedAcquisitionItemService implements ArchivedAcquisitionItemServiceIn
         $item = $this->itemRepository->create($data);
 
         return ArchivedAcquisitionItemDto::fromModel($item);
+    }
+
+    public function bulkInsert(array $data): void
+    {
+
     }
 
     public function update(int $id, int $apartmentId, array $data): ArchivedAcquisitionItemDto

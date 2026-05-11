@@ -18,6 +18,8 @@ interface ArchivedAcquisitionItemServiceInterface
 
     public function create(array $data, int $apartmentId): ArchivedAcquisitionItemDto;
 
+    public function bulkInsert(array $data): void;
+
     public function update(int $id, int $apartmentId, array $data): ArchivedAcquisitionItemDto;
 
     public function delete(int $id, int $apartmentId): void;

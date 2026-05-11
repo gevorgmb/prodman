@@ -36,6 +36,15 @@ class StockProductRepository extends BaseRepository implements StockProductRepos
         return $product;
     }
 
+    public function findByProductId(int $productId): Collection
+    {
+        return $this->productModel->newQuery()
+            ->with('acquisitionItem')
+            ->where('product_id', $productId)
+            ->orderBy('id')
+            ->get();
+    }
+
     public function create(array $data): StockProduct
     {
         /** @var StockProduct $product */
@@ -55,5 +64,14 @@ class StockProductRepository extends BaseRepository implements StockProductRepos
     public function delete(StockProduct $product): void
     {
         $product->delete();
+    }
+
+    public function bulkDelete(array $ids): void
+    {
+        if (empty($ids)) {
+            return;
+        }
+
+        $this->productModel->newQuery()->whereIn('id', $ids)->delete();
     }
 }
