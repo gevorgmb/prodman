@@ -6,6 +6,7 @@ namespace App\Listeners;
 use App\Events\AcquisitionCompleteEvent;
 use App\Models\Acquisition;
 use App\Services\Contracts\AcquisitionItemServiceInterface;
+use App\Services\Contracts\ProductServiceInterface;
 use App\Services\Contracts\StockProductServiceInterface;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -17,7 +18,7 @@ class AcquisitionCompleteListener
     public function __construct(
         private readonly AcquisitionItemServiceInterface $itemService,
         private readonly StockProductServiceInterface $stockProductService,
-        private readonly \App\Services\Contracts\ProductServiceInterface $productService,
+        private readonly ProductServiceInterface $productService,
     ) {
     }
 
@@ -34,11 +35,15 @@ class AcquisitionCompleteListener
             $min = 0;
             $unit = 'kg';
 
+            $mergeStock = false;
             if ($item->productId) {
                 $product = $this->productService->findByIdAndApartmentId($item->productId, $acquisition->apartment_id);
                 if ($product) {
                     $min = $product->min;
                     $unit = $product->unit;
+                    if ($product->mergeStock) {
+                        $mergeStock = true;
+                    }
                 }
             }
 
@@ -46,12 +51,14 @@ class AcquisitionCompleteListener
                 'itemId' => $item->id,
                 'product_id' => $item->productId ?? null,
                 'productName' => $item->productName,
-                'quantity' => $item->quantity,
-                'quantityUsed' => 0,
+                'quantityAvailable' => $item->quantity,
                 'expirationDate' => $item->expirationDate?->toDateString(),
                 'min' => $min,
                 'unit' => $unit,
             ], $acquisition->apartment_id);
+            if ($mergeStock) {
+                $this->stockProductService->mergeByProductId($item->productId);
+            }
         }
     }
 }

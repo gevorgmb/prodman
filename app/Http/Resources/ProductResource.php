@@ -25,6 +25,7 @@ class ProductResource extends JsonResource
             'description' => $this->description,
             'min' => $this->min,
             'unit' => $this->unit,
+            'mergeStock' => $this->mergeStock,
         ];
     }
 }

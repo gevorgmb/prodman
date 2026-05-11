@@ -19,6 +19,7 @@ readonly class ProductDto
         public ?string $description,
         public float $min,
         public string $unit,
+        public bool $mergeStock,
         public ?Carbon $createdAt,
         public ?Carbon $updatedAt,
     ) {
@@ -36,6 +37,7 @@ readonly class ProductDto
             description: $product->description,
             min: $product->min,
             unit: $product->unit,
+            mergeStock: $product->merge_stock ?? false,
             createdAt: $product->created_at,
             updatedAt: $product->updated_at,
         );
