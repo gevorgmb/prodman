@@ -52,6 +52,7 @@ class ApartmentRepository extends BaseRepository implements ApartmentRepositoryI
             'name' => $data['name'],
             'description' => $data['description'],
             'is_default' => $data['is_default'] ?? false,
+            'currency_id' => $data['currencyId'],
         ]);
 
         return $apartment;
@@ -59,12 +60,13 @@ class ApartmentRepository extends BaseRepository implements ApartmentRepositoryI
 
     public function updateForOwner(Apartment $apartment, array $data): Apartment
     {
-        if (! empty($data['is_default']) && ! $apartment->is_default) {
+        if (!empty($data['is_default']) && !$apartment->is_default) {
             $this->apartmentModel->newQuery()
                 ->where('owner_id', $apartment->owner_id)
                 ->where('is_default', true)
                 ->update(['is_default' => false]);
         }
+        $data['updated_at'] = now();
         $apartment->fill($data);
         $apartment->save();
 

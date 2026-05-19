@@ -21,7 +21,6 @@ class StockProductResource extends JsonResource
             'quantityAvailable' => $this->resource->quantityAvailable,
             'min' => $this->resource->min,
             'unit' => $this->resource->unit,
-            'product' => $this->resource->product ? new \App\Http\Resources\ProductResource($this->resource->product) : null,
             'expirationDate' => $this->resource->expirationDate,
             'createdAt' => $this->resource->createdAt,
             'updatedAt' => $this->resource->updatedAt,

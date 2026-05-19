@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Dto\StockProduct\StockProductDto;
+use App\Events\ArchiveStockItemEvent;
+use App\Listeners\ArchiveStockItemListener;
 use App\Models\StockProduct;
 use App\Repositories\Contracts\StockProductRepositoryInterface;
 use App\Services\Contracts\StockProductServiceInterface;
@@ -33,6 +35,14 @@ readonly class StockProductService implements StockProductServiceInterface
         $product = $this->stockProductRepository->findByIdAndApartmentId($id, $apartmentId);
 
         return $product === null ? null : StockProductDto::fromModel($product);
+    }
+
+    public function findById(int $id): ?StockProductDto
+    {
+        /** @var StockProduct $stockProduct */
+        $stockProduct = $this->stockProductRepository->find($id);
+
+        return $stockProduct === null ? null : StockProductDto::fromModel($stockProduct);
     }
 
     public function mergeByProductId(int $productId): ?StockProductDto
@@ -101,23 +111,15 @@ readonly class StockProductService implements StockProductServiceInterface
             throw new \RuntimeException('Stock Product not found.');
         }
 
-        if (isset($data['itemId'])) {
-            $data['item_id'] = $data['itemId'];
-        }
-
-        if (isset($data['productName'])) {
-            $data['product_name'] = $data['productName'];
-        }
-
-        if (isset($data['quantityAvailable'])) {
-            $data['quantity_available'] = $data['quantityAvailable'];
-        }
-
-        if (isset($data['expirationDate'])) {
-            $data['expiration_date'] = $data['expirationDate'];
-        }
-
+        $archive = $data['archive'] ?? false;
+        $reason = $data['reason'] ?? null;
+        unset($data['archive']);
+        unset($data['reason']);
         $updatedProduct = $this->stockProductRepository->update($product, $data);
+        if ($data['quantityAvailable'] == 0 || $archive) {
+            event(new ArchiveStockItemEvent($id, $reason));
+            \Log::info('Archiving stock item, event dispatched.');
+        }
 
         return StockProductDto::fromModel($updatedProduct);
     }
@@ -134,7 +136,7 @@ readonly class StockProductService implements StockProductServiceInterface
     private function buildCreateArchiveData(StockProduct $stockProduct): array
     {
         return [
-            'acquisition_id' => $stockProduct->apartment_id,
+            'apartment_id' => $stockProduct->apartment_id,
             'item_id' => $stockProduct->item_id,
             'product_name' => $stockProduct->product_name,
             'quantity_available' => $stockProduct->quantity_available,

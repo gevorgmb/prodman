@@ -48,7 +48,11 @@ readonly class ArchivedAcquisitionItemService implements ArchivedAcquisitionItem
 
     public function bulkInsert(array $data): void
     {
+        if (empty($data)) {
+            return;
+        }
 
+        $this->itemRepository->bulkInsert($data);
     }
 
     public function update(int $id, int $apartmentId, array $data): ArchivedAcquisitionItemDto
@@ -57,10 +61,6 @@ readonly class ArchivedAcquisitionItemService implements ArchivedAcquisitionItem
 
         if ($item === null) {
             throw new \RuntimeException('Archived Acquisition Item not found.');
-        }
-
-        if (isset($data['itemId'])) {
-            $data['item_id'] = $data['itemId'];
         }
 
         $updatedItem = $this->itemRepository->update($item, $data);

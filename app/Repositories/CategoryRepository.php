@@ -56,6 +56,7 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
 
     public function update(Category $category, array $data): Category
     {
+        $data['updated_at'] = now();
         $category->fill($data);
         $category->save();
 

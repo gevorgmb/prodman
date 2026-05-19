@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\AbstractActiveApartmentController;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
-use App\Http\Resources\ProductResource;
+use App\Http\Resources\Product\ProductResource;
 use App\Services\ApartmentService;
 use App\Services\Contracts\ProductServiceInterface;
 use Illuminate\Http\JsonResponse;

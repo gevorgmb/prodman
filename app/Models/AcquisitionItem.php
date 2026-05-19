@@ -38,6 +38,24 @@ class AcquisitionItem extends Model
         ];
     }
 
+    public function fill(array $attributes): self
+    {
+        if (isset($attributes['acquisitionId'])) {
+            $attributes['acquisition_id'] = (int) $attributes['acquisitionId'];
+        }
+        if (isset($attributes['productId'])) {
+            $attributes['product_id'] = $attributes['productId'] ? (int) $attributes['productId'] : null;
+        }
+        if (isset($attributes['productName'])) {
+            $attributes['product_name'] = $attributes['productName'];
+        }
+        if (isset($attributes['expirationDate'])) {
+            $attributes['expiration_date'] = $attributes['expirationDate'];
+        }
+
+        return parent::fill($attributes);
+    }
+
     public function acquisition(): BelongsTo
     {
         return $this->belongsTo(Acquisition::class, 'acquisition_id');

@@ -15,6 +15,8 @@ interface ArchivedAcquisitionItemRepositoryInterface extends EloquentRepositoryI
 
     public function create(array $data): ArchivedAcquisitionItem;
 
+    public function bulkInsert(array $data): void;
+
     public function update(ArchivedAcquisitionItem $item, array $data): ArchivedAcquisitionItem;
 
     public function delete(ArchivedAcquisitionItem $item): void;

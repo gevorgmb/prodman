@@ -16,6 +16,8 @@ interface StockProductServiceInterface
 
     public function findByIdAndApartmentId(int $id, int $apartmentId): ?StockProductDto;
 
+    public function findById(int $id): ?StockProductDto;
+
     public function mergeByProductId(int $productId): ?StockProductDto;
 
     public function create(array $data, int $apartmentId): StockProductDto;

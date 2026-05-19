@@ -41,7 +41,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(StockProductController::class)->group(function () {
         Route::get('stock-products', 'index');
         Route::get('stock-products/{id}', 'show');
-        Route::patch('stock-products/{id}', '');
+        Route::patch('stock-products/{id}', 'update');
+        Route::get('products-with-stock', 'productStock');
     });
     Route::controller(ArchivedAcquisitionItemController::class)->group(function () {
         Route::get('archived-acquisition-items', 'index');

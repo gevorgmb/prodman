@@ -57,6 +57,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
     public function update(Product $product, array $data): Product
     {
+        $data['updated_at'] = now();
         $product->fill($data);
         $product->save();
 
@@ -66,5 +67,15 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     public function delete(Product $product): void
     {
         $product->delete();
+    }
+
+    public function getAllByApartmentIdWithStock(int $apartmentId): Collection
+    {
+        return $this->productModel->newQuery()
+            ->with('stockProducts')
+            ->where('apartment_id', $apartmentId)
+            ->orderByDesc('importance')
+            ->orderBy('name')
+            ->get();
     }
 }

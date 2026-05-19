@@ -33,6 +33,24 @@ class Acquisition extends Model
         ];
     }
 
+    public function fill(array $attributes): self
+    {
+        if (isset($attributes['apartmentId'])) {
+            $attributes['apartment_id'] = (int) $attributes['apartmentId'];
+        }
+        if (isset($attributes['storeName'])) {
+            $attributes['store_name'] = $attributes['storeName'];
+        }
+        if (isset($attributes['userId'])) {
+            $attributes['user_id'] = (int) $attributes['userId'];
+        }
+        if (isset($attributes['currencyId'])) {
+            $attributes['currency_id'] = $attributes['currencyId'] ? (int) $attributes['currencyId'] : null;
+        }
+
+        return parent::fill($attributes);
+    }
+
     public function apartment(): BelongsTo
     {
         return $this->belongsTo(Apartment::class, 'apartment_id');

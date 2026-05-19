@@ -98,6 +98,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(StockProductServiceInterface::class, function ($app) {
             return new StockProductService(
                 $app->make(StockProductRepositoryInterface::class),
+                $app->make(ArchivedAcquisitionItemService::class),
             );
         });
 

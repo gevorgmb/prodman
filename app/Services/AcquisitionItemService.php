@@ -34,6 +34,14 @@ readonly class AcquisitionItemService implements AcquisitionItemServiceInterface
         return $item === null ? null : AcquisitionItemDto::fromModel($item);
     }
 
+    public function findById(int $id): ?AcquisitionItemDto
+    {
+        /** @var AcquisitionItem $item */
+        $item = $this->itemRepository->find($id);
+
+        return $item === null ? null : AcquisitionItemDto::fromModel($item);
+    }
+
     public function create(array $data, int $acquisitionId): AcquisitionItemDto
     {
         $data = $this->buildCreateData($data, $acquisitionId);

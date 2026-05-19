@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Product;
 
-use App\Dto\Product\ProductDto;
+use app\Dto\Product\ProductStockDto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin ProductDto
+ * @mixin ProductStockDto
  */
-class ProductResource extends JsonResource
+class ProductStockResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
@@ -26,6 +26,10 @@ class ProductResource extends JsonResource
             'min' => $this->min,
             'unit' => $this->unit,
             'mergeStock' => $this->mergeStock,
+            'category' => $this->category,
+            'department' => $this->department,
+            'stockProducts' => $this->stockProducts,
+            'totalCount' => $this->totalCount,
         ];
     }
 }

@@ -11,6 +11,8 @@ interface ProductServiceInterface
 {
     public function getAllByApartmentId(int $apartmentId): Collection;
 
+    public function getAllByApartmentIdWithStock(int $apartmentId): Collection;
+
     public function findByIdAndApartmentId(int $id, int $apartmentId): ?ProductDto;
 
     public function create(array $data, int $apartmentId): ProductDto;

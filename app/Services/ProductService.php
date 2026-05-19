@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Dto\Product\ProductDto;
+use App\Dto\Product\ProductStockDto;
 use App\Models\Product;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Services\Contracts\ProductServiceInterface;
@@ -21,6 +22,13 @@ readonly class ProductService implements ProductServiceInterface
     {
         return $this->productRepository->getAllByApartmentId($apartmentId)
             ->map(fn ($product) => ProductDto::fromModel($product))
+            ->values();
+    }
+
+    public function getAllByApartmentIdWithStock(int $apartmentId): Collection
+    {
+        return $this->productRepository->getAllByApartmentIdWithStock($apartmentId)
+            ->map(fn ($product) => ProductStockDto::fromModel($product))
             ->values();
     }
 
@@ -47,8 +55,6 @@ readonly class ProductService implements ProductServiceInterface
         if ($product === null) {
             throw new \RuntimeException('Product not found.');
         }
-        $data['category_id'] = empty($data['categoryId']) ? $product->category_id : (int) $data['categoryId'];
-        $data['department_id'] = empty($data['departmentId']) ? $product->department_id : (int) $data['departmentId'];
 
         return ProductDto::fromModel($this->productRepository->update($product, $data));
     }

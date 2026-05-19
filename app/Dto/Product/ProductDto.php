@@ -9,20 +9,42 @@ use Illuminate\Support\Carbon;
 
 readonly class ProductDto
 {
+    public int $id;
+    public int $apartmentId;
+    public string $name;
+    public int $importance;
+    public ?int $categoryId;
+    public ?int $departmentId;
+    public ?string $description;
+    public float $min;
+    public string $unit;
+    public bool $mergeStock;
+    public ?Carbon $createdAt;
+    public ?Carbon $updatedAt;
     public function __construct(
-        public int $id,
-        public int $apartmentId,
-        public string $name,
-        public int $importance,
-        public ?int $categoryId,
-        public ?int $departmentId,
-        public ?string $description,
-        public float $min,
-        public string $unit,
-        public bool $mergeStock,
-        public ?Carbon $createdAt,
-        public ?Carbon $updatedAt,
+        int $id,
+        int $apartmentId,
+        string $name,
+        int $importance,
+        ?int $categoryId,
+        ?int $departmentId,
+        ?string $description,
+        float $min,
+        string $unit,
+        bool $mergeStock,
+        ?Carbon $createdAt,
+        ?Carbon $updatedAt,
     ) {
+        $this->id = $id;
+        $this->apartmentId = $apartmentId;
+        $this->name = $name;
+        $this->importance = $importance;
+        $this->categoryId = $categoryId;
+        $this->departmentId = $departmentId;
+        $this->description = $description;
+        $this->min = $min;
+        $this->unit = $unit;
+        $this->mergeStock = $mergeStock;
     }
 
     public static function fromModel(Product $product): self

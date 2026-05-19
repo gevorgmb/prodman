@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Dto\StockProduct;
 
-use App\Dto\Product\ProductDto;
 use App\Models\StockProduct;
 use Illuminate\Support\Carbon;
 
@@ -19,7 +18,6 @@ readonly class StockProductDto
         public float       $quantityAvailable,
         public float       $min,
         public string      $unit,
-        public ?ProductDto $product,
         public ?Carbon     $expirationDate,
         public ?Carbon     $createdAt,
         public ?Carbon     $updatedAt,
@@ -37,7 +35,6 @@ readonly class StockProductDto
             quantityAvailable: $stockProduct->quantity_available,
             min: $stockProduct->min,
             unit: $stockProduct->unit,
-            product: $stockProduct->product ? ProductDto::fromModel($stockProduct->product) : null,
             expirationDate: $stockProduct->expiration_date,
             createdAt: $stockProduct->created_at,
             updatedAt: $stockProduct->updated_at,

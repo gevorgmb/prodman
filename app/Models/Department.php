@@ -28,6 +28,15 @@ class Department extends Model
         ];
     }
 
+    public function fill(array $attributes): self
+    {
+        if (isset($attributes['apartmentId'])) {
+            $attributes['apartment_id'] = (int) $attributes['apartmentId'];
+        }
+
+        return parent::fill($attributes);
+    }
+
     public function apartment(): BelongsTo
     {
         return $this->belongsTo(Apartment::class, 'apartment_id');

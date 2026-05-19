@@ -16,6 +16,8 @@ interface AcquisitionItemServiceInterface
 
     public function findByIdAndAcquisitionId(int $id, int $acquisitionId): ?AcquisitionItemDto;
 
+    public function findById(int $id): ?AcquisitionItemDto;
+
     public function create(array $data, int $acquisitionId): AcquisitionItemDto;
 
     public function bulkCreate(array $data, int $acquisitionId): void;

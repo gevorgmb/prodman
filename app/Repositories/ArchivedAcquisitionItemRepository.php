@@ -49,6 +49,7 @@ class ArchivedAcquisitionItemRepository extends BaseRepository implements Archiv
 
     public function update(ArchivedAcquisitionItem $item, array $data): ArchivedAcquisitionItem
     {
+        $data['updated_at'] = now();
         $item->fill($data);
         $item->save();
 
