@@ -21,6 +21,7 @@ class RelatedApartmentResource extends JsonResource
             'description' => $this->description,
             'isDefault' => $this->isDefault,
             'ownerId' => $this->ownerId,
+            'currencyId' => $this->currencyId,
             'isOwner' => $this->isOwner,
             'role' => $this->role,
         ];

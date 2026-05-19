@@ -11,12 +11,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
-#[Fillable(['owner_id', 'name', 'description', 'is_default'])]
+#[Fillable(['owner_id', 'name', 'description', 'is_default', 'currency_id'])]
 /**
  * @property int $id
  * @property int $owner_id
  * @property string $name
  * @property string $description
+ * @property int|null $currency_id
  * @property boolean $is_default
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -34,6 +35,15 @@ class Apartment extends Model
             'updated_at' => 'datetime',
             'deleted_at' => 'datetime',
         ];
+    }
+
+    public function fill(array $attributes): self
+    {
+        if (isset($attributes['currencyId'])) {
+            $attributes['currency_id'] = (int) $attributes['currencyId'];
+        }
+
+        return parent::fill($attributes);
     }
 
     public function owner(): BelongsTo
@@ -54,5 +64,10 @@ class Apartment extends Model
     public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'apartment_id');
+    }
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class, 'currency_id');
     }
 }

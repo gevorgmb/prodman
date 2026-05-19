@@ -23,6 +23,7 @@ class StoreApartmentRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'is_default' => ['sometimes', 'boolean'],
+            'currencyId' => ['required', 'integer', 'exists:currencies,id'],
         ];
     }
 }

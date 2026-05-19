@@ -25,14 +25,9 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|required|string|max:255',
-            'importance' => 'sometimes|required|integer|min:0',
-            'categoryId' => 'nullable|integer|exists:categories,id',
-            'departmentId' => 'nullable|integer|exists:departments,id',
-            'description' => 'nullable|string',
-            'min' => 'sometimes|numeric|min:0',
-            'unit' => 'sometimes|string|max:50',
-            'mergeStock' => 'sometimes|boolean',
+            'quantityAvailable' => 'required_without:archive|numeric|min:0',
+            'archive' => 'required_without:quantityAvailable|required_with:reason|boolean',
+            'reason' => 'nullable|string|max:255'
         ];
     }
 }

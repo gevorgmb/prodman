@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\AbstractActiveApartmentController;
-use App\Http\Requests\StoreStockProductRequest;
-use App\Http\Requests\UpdateStockProductRequest;
-use App\Http\Requests\UseProductRequest;
+use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\Product\ProductStockResource;
 use App\Http\Resources\StockProduct\StockProductResource;
 use App\Services\Contracts\ApartmentServiceInterface;
+use App\Services\Contracts\ProductServiceInterface;
 use App\Services\Contracts\StockProductServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,6 +19,7 @@ class StockProductController extends AbstractActiveApartmentController
     public function __construct(
         private readonly StockProductServiceInterface $stockProductService,
         private readonly ApartmentServiceInterface $apartmentService,
+        private readonly ProductServiceInterface $productService,
     ) {
         parent::__construct($this->apartmentService);
     }
@@ -31,10 +32,25 @@ class StockProductController extends AbstractActiveApartmentController
             return response()->json(['message' => $e->getMessage()], 422);
         }
 
-        $products = $this->stockProductService->getAllByApartmentId($managedApartment->apartment->id);
+        $stockProducts = $this->stockProductService->getAllByApartmentId($managedApartment->apartment->id);
 
         return response()->json([
-            'stockProducts' => StockProductResource::collection($products),
+            'stockProducts' => StockProductResource::collection($stockProducts),
+        ]);
+    }
+
+    public function productStock(Request $request): JsonResponse
+    {
+        try {
+            $managedApartment = $this->resolveManagedApartment($request);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+
+        $products = $this->productService->getAllByApartmentIdWithStock($managedApartment->apartment->id);
+
+        return response()->json([
+            'products' => ProductStockResource::collection($products),
         ]);
     }
 
@@ -57,10 +73,28 @@ class StockProductController extends AbstractActiveApartmentController
         ]);
     }
 
-    public function useProduct(int $id, UseProductRequest $request): JsonResponse
+    public function update(int $id, UpdateProductRequest $request): JsonResponse
     {
+        try {
+            $managedApartment = $this->resolveManagedApartment($request);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+        $product = $this->stockProductService->findByIdAndApartmentId($id, $managedApartment->apartment->id);
+        if ($product === null) {
+            return response()->json(['message' => 'Stock product not found.'], 404);
+        }
+        $data = $request->validated();
+        if ($product->quantityAvailable < $data['quantityAvailable']) {
+            return response()->json(['message' => 'Available quantity can not be increased manually.'], 422);
+        }
+        $updatedStockProduct = $this->stockProductService->update(
+            $id,
+            $managedApartment->apartment->id,
+            $request->validated(),
+        );
         return response()->json([
-            'stockProduct' => new StockProductResource($product),
+            'stockProduct' => new StockProductResource($updatedStockProduct),
         ]);
     }
 }

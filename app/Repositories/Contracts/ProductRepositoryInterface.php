@@ -20,4 +20,6 @@ interface ProductRepositoryInterface extends EloquentRepositoryInterface
     public function update(Product $product, array $data): Product;
 
     public function delete(Product $product): void;
+
+    public function getAllByApartmentIdWithStock(int $apartmentId): Collection;
 }

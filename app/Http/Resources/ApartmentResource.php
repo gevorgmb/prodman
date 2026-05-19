@@ -20,6 +20,7 @@ class ApartmentResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'isDefault' => $this->is_default,
+            'currencyId' => $this->currency_id,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

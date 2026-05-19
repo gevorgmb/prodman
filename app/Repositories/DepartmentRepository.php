@@ -56,6 +56,7 @@ class DepartmentRepository extends BaseRepository implements DepartmentRepositor
 
     public function update(Department $department, array $data): Department
     {
+        $data['updated_at'] = now();
         $department->fill($data);
         $department->save();
 

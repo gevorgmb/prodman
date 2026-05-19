@@ -19,7 +19,7 @@ class StockProductRepository extends BaseRepository implements StockProductRepos
     public function getAllByApartmentId(int $apartmentId): Collection
     {
         return $this->productModel->newQuery()
-            ->with('product')
+            ->whereDoesntHave('product')
             ->where('apartment_id', $apartmentId)
             ->get();
     }
@@ -55,6 +55,7 @@ class StockProductRepository extends BaseRepository implements StockProductRepos
 
     public function update(StockProduct $product, array $data): StockProduct
     {
+        $data['updated_at'] = now();
         $product->fill($data);
         $product->save();
 

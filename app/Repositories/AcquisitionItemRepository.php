@@ -74,6 +74,7 @@ class AcquisitionItemRepository extends BaseRepository implements AcquisitionIte
 
     public function update(AcquisitionItem $item, array $data): AcquisitionItem
     {
+        $data['updated_at'] = now();
         $item->fill($data);
         $item->save();
 

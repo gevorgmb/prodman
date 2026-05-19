@@ -12,6 +12,7 @@ readonly class RelatedApartmentDto
         public ?string $description,
         public bool $isDefault,
         public int $ownerId,
+        public ?int $currencyId,
         public bool $isOwner,
         public string $role,
     ) {

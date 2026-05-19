@@ -39,6 +39,30 @@ class StockProduct extends Model
         ];
     }
 
+    public function fill(array $attributes): self
+    {
+        if (isset($attributes['apartmentId'])) {
+            $attributes['apartment_id'] = (int) $attributes['apartmentId'];
+        }
+        if (isset($attributes['itemId'])) {
+            $attributes['item_id'] = (int) $attributes['itemId'];
+        }
+        if (isset($attributes['productId'])) {
+            $attributes['product_id'] = $attributes['productId'] ? (int) $attributes['productId'] : null;
+        }
+        if (isset($attributes['productName'])) {
+            $attributes['product_name'] = $attributes['productName'];
+        }
+        if (isset($attributes['quantityAvailable'])) {
+            $attributes['quantity_available'] = (float) $attributes['quantityAvailable'];
+        }
+        if (isset($attributes['expirationDate'])) {
+            $attributes['expiration_date'] = $attributes['expirationDate'];
+        }
+
+        return parent::fill($attributes);
+    }
+
     public function apartment(): BelongsTo
     {
         return $this->belongsTo(Apartment::class, 'apartment_id');

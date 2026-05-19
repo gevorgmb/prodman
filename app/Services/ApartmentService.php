@@ -91,6 +91,7 @@ readonly class ApartmentService implements ApartmentServiceInterface
                 description: $apartment->description,
                 isDefault: (bool) $apartment->is_default,
                 ownerId: $apartment->owner_id,
+                currencyId: $apartment->currency_id,
                 isOwner: true,
                 role: ApartmentUserRoleEnum::ADMIN->value,
             );
@@ -112,6 +113,7 @@ readonly class ApartmentService implements ApartmentServiceInterface
                 description: $apartment->description,
                 isDefault: (bool) $apartment->is_default,
                 ownerId: $apartment->owner_id,
+                currencyId: $apartment->currency_id,
                 isOwner: false,
                 role: $membership->role,
             );
